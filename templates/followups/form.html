@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}New follow-up{% else %}Edit follow-up{% endif %} | AcxiomCRM{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">FOLLOW-UPS</div><h1>{% if is_create %}Plan a follow-up{% else %}Edit follow-up{% endif %}</h1><p class="text-secondary mb-0">Choose one customer or one lead to associate with this follow-up.</p></div></div>
+<form method="post" class="surface-panel crm-form" novalidate>{% csrf_token %}{% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}<div class="row g-3">{% for field in form %}<div class="col-12 {% if field.name == 'remarks' %}col-lg-8{% else %}col-md-6 col-lg-4{% endif %}"><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}</div>{% endfor %}</div><div class="form-actions"><a class="btn btn-outline-secondary" href="{% if followup %}{% url 'followups:detail' followup.pk %}{% else %}{% url 'followups:list' %}{% endif %}">Cancel</a><button class="btn btn-primary" type="submit">Save follow-up</button></div></form>
+{% endblock %}

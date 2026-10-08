@@ -1,0 +1,20 @@
+@model AcxiomCRM.Services.PagedResult<AcxiomCRM.Models.AuditLog>
+@{
+    ViewData["Title"] = "Audit log";
+}
+<div class="page-heading"><div><p class="eyebrow">SECURITY</p><h1>Audit log</h1><p class="text-secondary mb-0">Append-only history of authentication and CRM events.</p></div></div>
+<form method="get" class="data-panel mb-3"><div class="row g-2">
+    <div class="col-lg-2 col-md-4"><input name="userId" value="@ViewBag.UserId" class="form-control" placeholder="User ID" /></div>
+    <div class="col-lg-2 col-md-4"><input name="module" value="@ViewBag.Module" class="form-control" placeholder="Module" /></div>
+    <div class="col-lg-2 col-md-4"><input name="action" value="@ViewBag.Action" class="form-control" placeholder="Action" /></div>
+    <div class="col-lg-2 col-md-4"><input name="recordId" value="@ViewBag.RecordId" class="form-control" placeholder="Record ID" /></div>
+    <div class="col-lg-1 col-md-4"><select name="result" class="form-select"><option value="">Any result</option><option selected="@(ViewBag.Result == "Success")">Success</option><option selected="@(ViewBag.Result == "Failure")">Failure</option></select></div>
+    <div class="col-lg-1 col-md-4"><input name="from" value="@ViewBag.From" type="date" class="form-control" aria-label="From date" /></div>
+    <div class="col-lg-1 col-md-4"><input name="to" value="@ViewBag.To" type="date" class="form-control" aria-label="To date" /></div>
+    <div class="col-lg-1 col-md-4"><button class="btn btn-outline-secondary w-100">Filter</button></div>
+</div></form>
+<div class="table-responsive data-panel p-0"><table class="table table-hover align-middle mb-0"><thead><tr><th>Timestamp</th><th>User ID</th><th>Action</th><th>Module</th><th>Record</th><th>Result</th><th>Details</th></tr></thead><tbody>
+@if (Model.Items.Count == 0) { <tr><td colspan="7" class="text-center text-secondary py-5">No audit entries match these filters.</td></tr> }
+@foreach (var item in Model.Items) { <tr><td class="text-nowrap">@item.CreatedDate.ToLocalTime().ToString("g")</td><td><small>@item.UserId</small></td><td>@item.Action</td><td>@item.Module</td><td>@item.EntityName @item.RecordId</td><td><span class="badge text-bg-@(item.Result == "Success" ? "success" : "danger")">@item.Result</span></td><td>@item.Details</td></tr> }
+</tbody></table></div>
+@if (Model.PageCount > 1) { <nav class="mt-3"><ul class="pagination pagination-sm">@for (var index = 1; index <= Model.PageCount; index++) { <li class="page-item @(Model.Page == index ? "active" : "")"><a class="page-link" asp-route-page="@index" asp-route-userId="@ViewBag.UserId" asp-route-module="@ViewBag.Module" asp-route-action="@ViewBag.Action" asp-route-result="@ViewBag.Result" asp-route-from="@ViewBag.From" asp-route-to="@ViewBag.To">@index</a></li> }</ul></nav> }

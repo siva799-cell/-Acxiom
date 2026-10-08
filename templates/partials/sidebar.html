@@ -1,0 +1,35 @@
+<aside class="offcanvas-lg offcanvas-start sidebar" tabindex="-1" id="crm-sidebar" aria-labelledby="sidebar-label">
+  <div class="offcanvas-header d-lg-none">
+    <span class="sidebar-title" id="sidebar-label">Navigation</span>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#crm-sidebar" aria-label="Close navigation"></button>
+  </div>
+  <nav class="sidebar-nav" aria-label="Main navigation">
+    <div class="nav-section-label">Workspace</div>
+    <a class="sidebar-link {% if request.resolver_match.namespace == 'dashboard' %}active{% endif %}" href="{% url 'dashboard:home' %}">
+      <i class="bi bi-grid-1x2" aria-hidden="true"></i><span>Dashboard</span>
+    </a>
+
+    <div class="nav-section-label">CRM</div>
+    {% for label, icon, route_name in crm_navigation.crm_items %}
+      {% if route_name %}
+        <a class="sidebar-link {% if request.resolver_match.namespace == route_name|slice:':9' %}active{% endif %}" href="{% url route_name %}">
+          <i class="bi {{ icon }}" aria-hidden="true"></i><span>{{ label }}</span>
+        </a>
+      {% else %}
+        <span class="sidebar-link disabled" aria-disabled="true" title="Available in a later phase">
+          <i class="bi {{ icon }}" aria-hidden="true"></i><span>{{ label }}</span><span class="nav-soon">Later</span>
+        </span>
+      {% endif %}
+    {% endfor %}
+
+    {% if crm_navigation.show_admin %}
+      <div class="nav-section-label">Administration</div>
+      {% for label, icon in crm_navigation.admin_items %}
+        <span class="sidebar-link disabled" aria-disabled="true" title="Available in a later phase">
+          <i class="bi {{ icon }}" aria-hidden="true"></i><span>{{ label }}</span><span class="nav-soon">Later</span>
+        </span>
+      {% endfor %}
+    {% endif %}
+  </nav>
+  <div class="sidebar-note">Application foundation</div>
+</aside>

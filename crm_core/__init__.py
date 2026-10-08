@@ -1,0 +1,1 @@
+"""Shared authorization and audit services for CRM modules."""

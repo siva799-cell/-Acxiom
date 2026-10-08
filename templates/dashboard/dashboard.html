@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | AcxiomCRM{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <div>
+    <div class="eyebrow">WORKSPACE</div>
+    <h1>Welcome back, {{ request.user.get_full_name|default:request.user.username }}</h1>
+    <p class="text-secondary mb-0">{{ role_message }}</p>
+  </div>
+  <span class="role-badge role-badge-large">{{ crm_role_label }}</span>
+</section>
+
+<section class="metric-grid" aria-label="Follow-up indicators">
+  <article class="metric-panel"><div class="metric-icon icon-green"><i class="bi bi-calendar2-check" aria-hidden="true"></i></div><div><h2>Today's follow-ups</h2><p>{{ todays_followups }} planned</p></div></article>
+  <article class="metric-panel"><div class="metric-icon icon-red"><i class="bi bi-exclamation-circle" aria-hidden="true"></i></div><div><h2>Overdue follow-ups</h2><p>{{ overdue_followups }} planned</p></div></article>
+  <article class="metric-panel"><div class="metric-icon icon-blue"><i class="bi bi-check2-circle" aria-hidden="true"></i></div><div><h2>Completed follow-ups</h2><p>{{ completed_followups }} total</p></div></article>
+</section>
+
+<section class="dashboard-lower">
+  <article class="surface-panel profile-panel" id="profile-summary">
+    <div class="panel-heading"><div><div class="eyebrow">ACCOUNT</div><h2>Your profile</h2></div><i class="bi bi-person-badge panel-heading-icon" aria-hidden="true"></i></div>
+    <dl class="profile-list">
+      <div><dt>Name</dt><dd>{{ request.user.get_full_name|default:request.user.username }}</dd></div>
+      <div><dt>Email</dt><dd>{{ request.user.email|default:"Not provided" }}</dd></div>
+      <div><dt>Role</dt><dd><span class="role-badge">{{ crm_role_label }}</span></dd></div>
+      <div><dt>Last login</dt><dd>{% if request.user.last_login %}{{ request.user.last_login|date:"M j, Y, g:i A" }}{% else %}Not available{% endif %}</dd></div>
+    </dl>
+  </article>
+  <article class="surface-panel phase-panel">
+    <div class="panel-heading"><div><div class="eyebrow">COMING IN LATER PHASES</div><h2>CRM workspace</h2></div><i class="bi bi-layers panel-heading-icon" aria-hidden="true"></i></div>
+    <p class="text-secondary">Your workspace connects customer records, leads, follow-ups, and activities in one place.</p>
+    <div class="module-status-list">
+      <span><i class="bi bi-check-circle" aria-hidden="true"></i> Customer and lead management</span>
+      <span><i class="bi bi-check-circle" aria-hidden="true"></i> Follow-up tracking</span>
+      <span><i class="bi bi-check-circle" aria-hidden="true"></i> Activity management</span>
+    </div>
+  </article>
+</section>
+{% endblock %}

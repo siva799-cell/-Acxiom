@@ -1,0 +1,19 @@
+@model AcxiomCRM.Services.ReportResult
+@{
+    ViewData["Title"] = Model.Title;
+}
+<div class="page-heading"><div><p class="eyebrow">REPORTS</p><h1>@Model.Title</h1><p class="text-secondary mb-0">@Model.TotalCount records in the current result.</p></div><a asp-action="Index" class="btn btn-outline-secondary">All reports</a></div>
+<form method="get" class="data-panel mb-3"><div class="row g-2">
+    <div class="col-lg-3 col-md-6"><input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search" /></div>
+    <div class="col-lg-2 col-md-6"><input name="status" value="@ViewBag.Status" class="form-control" placeholder="Status or stage" /></div>
+    @if (User.IsInRole("Admin") || User.IsInRole("Manager")) { <div class="col-lg-2 col-md-6"><input name="ownerId" value="@ViewBag.OwnerId" class="form-control" placeholder="Owner user ID" /></div> }
+    <div class="col-lg-2 col-md-6"><input name="from" value="@ViewBag.From" type="date" class="form-control" aria-label="From date" /></div>
+    <div class="col-lg-2 col-md-6"><input name="to" value="@ViewBag.To" type="date" class="form-control" aria-label="To date" /></div>
+    <div class="col-lg-1 col-md-6"><button class="btn btn-outline-secondary w-100">Filter</button></div>
+</div></form>
+<div class="d-flex justify-content-end mb-2"><a class="btn btn-sm btn-outline-secondary" asp-action="@ViewBag.ActionName" asp-route-search="@ViewBag.Search" asp-route-status="@ViewBag.Status" asp-route-ownerId="@ViewBag.OwnerId" asp-route-from="@ViewBag.From" asp-route-to="@ViewBag.To" asp-route-format="csv">Export current page CSV</a></div>
+<div class="table-responsive data-panel p-0"><table class="table table-hover align-middle mb-0"><thead><tr>@foreach (var column in Model.Columns) { <th>@column</th> }</tr></thead><tbody>
+@if (Model.Rows.Count == 0) { <tr><td colspan="@Model.Columns.Length" class="text-center text-secondary py-5">No report data matches these filters.</td></tr> }
+@foreach (var row in Model.Rows) { <tr>@foreach (var value in row) { <td>@value</td> }</tr> }
+</tbody></table></div>
+@if (Model.PageCount > 1) { <nav class="mt-3"><ul class="pagination pagination-sm">@for (var index = 1; index <= Model.PageCount; index++) { <li class="page-item @(Model.Page == index ? "active" : "")"><a class="page-link" asp-action="@ViewBag.ActionName" asp-route-page="@index" asp-route-search="@ViewBag.Search" asp-route-status="@ViewBag.Status" asp-route-ownerId="@ViewBag.OwnerId" asp-route-from="@ViewBag.From" asp-route-to="@ViewBag.To">@index</a></li> }</ul></nav> }

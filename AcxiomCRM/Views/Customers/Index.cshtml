@@ -1,0 +1,21 @@
+@model AcxiomCRM.Services.PagedResult<AcxiomCRM.Models.Customer>
+@{
+    ViewData["Title"] = "Customers";
+}
+<div class="page-heading">
+    <div><p class="eyebrow">RELATIONSHIPS</p><h1>Customers</h1><p class="text-secondary mb-0">Manage active and inactive customer records.</p></div>
+    <a class="btn btn-primary" asp-action="Create">Add customer</a>
+</div>
+@if (TempData["Success"] is string message) { <div class="alert alert-success">@message</div> }
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-6"><label class="visually-hidden" for="search">Search customers</label><input id="search" name="search" value="@ViewBag.Search" class="form-control" placeholder="Name, company, email or phone" /></div>
+    <div class="col-md-3"><select name="status" class="form-select"><option value="">All statuses</option><option selected="@(ViewBag.Status == "Active")">Active</option><option selected="@(ViewBag.Status == "Inactive")">Inactive</option></select></div>
+    <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
+</form>
+<div class="table-responsive data-panel p-0">
+    <table class="table table-hover align-middle mb-0"><thead><tr><th>Customer</th><th>Company</th><th>Email</th><th>Phone</th><th>Status</th><th>Created</th><th></th></tr></thead><tbody>
+    @if (Model.Items.Count == 0) { <tr><td colspan="7" class="text-center text-secondary py-5">No customers match this search.</td></tr> }
+    @foreach (var customer in Model.Items) { <tr><td><a asp-action="Details" asp-route-id="@customer.Id">@customer.CustomerName</a><small class="d-block text-secondary">@customer.CustomerCode</small></td><td>@customer.CompanyName</td><td>@customer.Email</td><td>@customer.Phone</td><td><span class="badge text-bg-@(customer.Status == "Active" ? "success" : "secondary")">@customer.Status</span></td><td>@customer.CreatedDate.ToLocalTime().ToString("d")</td><td><a asp-action="Edit" asp-route-id="@customer.Id">Edit</a></td></tr> }
+    </tbody></table>
+</div>
+@if (Model.PageCount > 1) { <nav aria-label="Customer pages" class="mt-3"><ul class="pagination pagination-sm">@for (var index = 1; index <= Model.PageCount; index++) { <li class="page-item @(Model.Page == index ? "active" : "")"><a class="page-link" asp-route-page="@index" asp-route-search="@ViewBag.Search" asp-route-status="@ViewBag.Status">@index</a></li> }</ul></nav> }

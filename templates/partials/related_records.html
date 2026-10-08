@@ -1,0 +1,10 @@
+<div class="dashboard-lower mt-3">
+  <section class="surface-panel">
+    <div class="panel-heading"><h2>Related follow-ups</h2><a class="btn btn-sm btn-outline-primary" href="{% url 'followups:create' %}?{{ related_kind }}={{ related_record.pk }}">Add</a></div>
+    {% for followup in related_followups %}<p class="related-row"><a href="{% url 'followups:detail' followup.pk %}">{{ followup.follow_up_date|date:"M j, Y" }} · {{ followup.subject }}</a><span class="badge text-bg-primary">{{ followup.status }}</span></p>{% empty %}<p class="text-secondary mb-0">No follow-ups yet.</p>{% endfor %}
+  </section>
+  <section class="surface-panel">
+    <div class="panel-heading"><h2>Related activities</h2><a class="btn btn-sm btn-outline-primary" href="{% url 'activities:create' %}?{{ related_kind }}={{ related_record.pk }}">Add</a></div>
+    {% for activity in related_activities %}<p class="related-row"><a href="{% url 'activities:detail' activity.pk %}">{{ activity.activity_date|date:"M j, Y" }} · {{ activity.subject }}</a><span class="badge text-bg-secondary">{{ activity.status }}</span></p>{% empty %}<p class="text-secondary mb-0">No activities yet.</p>{% endfor %}
+  </section>
+</div>

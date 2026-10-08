@@ -1,0 +1,11 @@
+@model AcxiomCRM.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+<section class="empty-state">
+    <p class="eyebrow">500</p>
+    <h1>Something went wrong</h1>
+    <p>We could not complete that request. Please try again later.</p>
+    @if (Model.ShowRequestId) { <p class="text-secondary small">Reference: @Model.RequestId</p> }
+    <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Return to AcxiomCRM</a>
+</section>

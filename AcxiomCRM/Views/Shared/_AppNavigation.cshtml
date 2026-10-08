@@ -1,0 +1,17 @@
+<nav class="app-navigation" aria-label="Main navigation">
+    <p class="nav-section-label">WORKSPACE</p>
+    <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+    <a asp-controller="Customers" asp-action="Index">Customers</a>
+    <a asp-controller="Leads" asp-action="Index">Leads</a>
+    <a asp-controller="Opportunities" asp-action="Index">Opportunities</a>
+    <a asp-controller="FollowUps" asp-action="Index">Follow-ups</a>
+    <a asp-controller="Activities" asp-action="Index">Activities</a>
+    <a asp-controller="Reports" asp-action="Index">Reports</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <p class="nav-section-label nav-section-spaced">ADMINISTRATION</p>
+        <a asp-controller="Users" asp-action="Index">Users</a>
+        <a asp-controller="Roles" asp-action="Index">Roles</a>
+        <a asp-controller="Audit" asp-action="Index">Audit log</a>
+    }
+</nav>

@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Convert {{ lead.lead_code }} | AcxiomCRM{% endblock %}
+{% block content %}
+<section class="surface-panel confirm-panel"><div class="eyebrow">LEAD CONVERSION</div><h1>Convert {{ lead.lead_name }}?</h1><p class="text-secondary">This will create a customer record or link an existing matching customer, preserve the relationship, and mark this lead Converted. This action cannot be undone.</p><div class="conversion-summary"><span><strong>Lead</strong>{{ lead.lead_code }}</span><span><strong>Company</strong>{{ lead.company_name|default:"—" }}</span><span><strong>Email</strong>{{ lead.email|default:"—" }}</span></div><form method="post" class="form-actions">{% csrf_token %}<a class="btn btn-outline-secondary" href="{% url 'leads:detail' lead.pk %}">Cancel</a><button class="btn btn-primary" type="submit">Confirm conversion</button></form></section>
+{% endblock %}

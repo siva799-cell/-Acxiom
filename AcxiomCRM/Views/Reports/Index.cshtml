@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Reports";
+}
+<div class="page-heading"><div><p class="eyebrow">INSIGHTS</p><h1>Reports</h1><p class="text-secondary mb-0">Download or review data from your authorized CRM scope.</p></div></div>
+<div class="report-list">
+    <a asp-action="Customers"><strong>Customer report</strong><span>Status, owner, and creation date</span></a>
+    <a asp-action="Leads"><strong>Lead report</strong><span>Source, qualification, and conversion</span></a>
+    <a asp-action="FollowUps"><strong>Follow-up report</strong><span>Planned, completed, and overdue actions</span></a>
+    <a asp-action="Opportunities"><strong>Opportunity report</strong><span>Stage, amount, probability, and close date</span></a>
+    <a asp-action="Pipeline"><strong>Pipeline report</strong><span>Count, total amount, and weighted value by stage</span></a>
+    <a asp-action="Conversion"><strong>Conversion report</strong><span>Qualified and converted lead totals</span></a>
+    <a asp-action="UserActivity"><strong>User activity report</strong><span>Recorded action totals by user</span></a>
+    @if (User.IsInRole("Admin")) { <a asp-action="Audit"><strong>Audit report</strong><span>Security and business event history</span></a> }
+</div>

@@ -1,0 +1,11 @@
+@model AcxiomCRM.Models.Customer
+@{
+    ViewData["Title"] = "Add customer";
+}
+<div class="page-heading"><div><p class="eyebrow">CUSTOMERS</p><h1>Add customer</h1></div></div>
+<form asp-action="Create" method="post" class="data-panel form-panel">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <partial name="_Form" model="Model" />
+    <div class="d-flex gap-2 mt-4"><button class="btn btn-primary" type="submit">Create customer</button><a asp-action="Index" class="btn btn-outline-secondary">Cancel</a></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

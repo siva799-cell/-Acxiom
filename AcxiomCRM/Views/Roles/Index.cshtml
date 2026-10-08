@@ -1,0 +1,6 @@
+@model IReadOnlyList<AcxiomCRM.Controllers.RoleSummaryViewModel>
+@{
+    ViewData["Title"] = "Roles";
+}
+<div class="page-heading"><div><p class="eyebrow">ADMINISTRATION</p><h1>Roles</h1><p class="text-secondary mb-0">Primary roles are fixed to protect the authorization model.</p></div></div>
+<div class="table-responsive data-panel p-0"><table class="table align-middle mb-0"><thead><tr><th>Role</th><th>Purpose</th><th>Users</th></tr></thead><tbody>@foreach (var role in Model) { <tr><td><span class="badge text-bg-light">@role.Name</span></td><td>@role.Description</td><td>@role.UserCount</td></tr> }</tbody></table></div>

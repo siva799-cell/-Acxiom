@@ -1,0 +1,12 @@
+@model AcxiomCRM.Services.PagedResult<AcxiomCRM.Models.Opportunity>
+@{
+    ViewData["Title"] = "Opportunities";
+}
+<div class="page-heading"><div><p class="eyebrow">REVENUE</p><h1>Opportunities</h1><p class="text-secondary mb-0">Manage qualified deals and their sales stages.</p></div><a class="btn btn-primary" asp-action="Create">Add opportunity</a></div>
+@if (TempData["Success"] is string success) { <div class="alert alert-success">@success</div> }
+<form method="get" class="row g-2 mb-3"><div class="col-md-6"><input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search opportunity" aria-label="Search opportunities" /></div><div class="col-md-3"><select name="stage" class="form-select"><option value="">All stages</option>@foreach (var value in new[] { "Qualification", "Proposal", "Negotiation", "Won", "Lost" }) { <option selected="@(ViewBag.Stage == value)">@value</option> }</select></div><div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div></form>
+<div class="table-responsive data-panel p-0"><table class="table table-hover align-middle mb-0"><thead><tr><th>Opportunity</th><th>Stage</th><th>Amount</th><th>Probability</th><th>Weighted</th><th>Expected close</th><th></th></tr></thead><tbody>
+@if (Model.Items.Count == 0) { <tr><td colspan="7" class="text-center text-secondary py-5">No opportunities match this search.</td></tr> }
+@foreach (var item in Model.Items) { <tr><td><a asp-action="Details" asp-route-id="@item.Id">@item.OpportunityName</a></td><td><span class="badge text-bg-light">@item.Stage</span></td><td>@item.Amount.ToString("N2")</td><td>@item.Probability%</td><td>@item.WeightedAmount.ToString("N2")</td><td>@item.ExpectedCloseDate?.ToLocalTime().ToString("d")</td><td><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></td></tr> }
+</tbody></table></div>
+@if (Model.PageCount > 1) { <nav class="mt-3"><ul class="pagination pagination-sm">@for (var index = 1; index <= Model.PageCount; index++) { <li class="page-item @(Model.Page == index ? "active" : "")"><a class="page-link" asp-route-page="@index" asp-route-search="@ViewBag.Search" asp-route-stage="@ViewBag.Stage">@index</a></li> }</ul></nav> }

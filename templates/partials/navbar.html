@@ -1,0 +1,22 @@
+<header class="topbar">
+  <div class="topbar-inner">
+    {% if request.user.is_authenticated %}
+      <button class="btn btn-outline-secondary sidebar-toggle d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#crm-sidebar" aria-controls="crm-sidebar" aria-label="Open navigation">
+        <i class="bi bi-list" aria-hidden="true"></i>
+      </button>
+    {% endif %}
+    <a class="brand" href="{% if request.user.is_authenticated %}{% url 'dashboard:home' %}{% else %}{% url 'accounts:login' %}{% endif %}">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>AcxiomCRM</span>
+    </a>
+    {% if request.user.is_authenticated %}
+      <div class="topbar-user d-none d-sm-flex">
+        <span class="topbar-user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        <span class="role-badge">{{ crm_role_label }}</span>
+      </div>
+      {% include "partials/user_menu.html" %}
+    {% else %}
+      <a class="btn btn-sm btn-primary" href="{% url 'accounts:login' %}">Sign in</a>
+    {% endif %}
+  </div>
+</header>

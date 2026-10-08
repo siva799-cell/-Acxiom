@@ -1,0 +1,83 @@
+@model AcxiomCRM.ViewModels.Dashboard.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">OVERVIEW</p>
+        <h1>Welcome, @Model.Name</h1>
+        <p class="text-secondary mb-0">@Model.Email <span class="mx-2">·</span> <span class="role-label">@Model.Role</span></p>
+    </div>
+</div>
+<form method="get" class="dashboard-filter">
+    <label for="range" class="form-label mb-0">Reporting period</label>
+    <select id="range" name="range" class="form-select form-select-sm">
+        <option value="" selected="@(ViewBag.Range == null ? "selected" : null)">All time</option>
+        <option value="today" selected="@(ViewBag.Range == "today" ? "selected" : null)">Today</option>
+        <option value="week" selected="@(ViewBag.Range == "week" ? "selected" : null)">This week</option>
+        <option value="month" selected="@(ViewBag.Range == "month" ? "selected" : null)">This month</option>
+        <option value="custom" selected="@(ViewBag.Range == "custom" ? "selected" : null)">Custom range</option>
+    </select>
+    <input name="from" value="@ViewBag.From" type="date" class="form-control form-control-sm" aria-label="Start date" />
+    <input name="to" value="@ViewBag.To" type="date" class="form-control form-control-sm" aria-label="End date" />
+    <button class="btn btn-sm btn-outline-secondary">Apply</button>
+</form>
+<section class="metric-grid" aria-label="CRM summary">
+    <article class="metric-card"><span>Customers</span><strong>@Model.TotalCustomers</strong><small>Records in your scope</small></article>
+    <article class="metric-card"><span>Leads</span><strong>@Model.TotalLeads</strong><small>@Model.OpenLeads open</small></article>
+    <article class="metric-card"><span>Opportunities</span><strong>@Model.TotalOpportunities</strong><small>@Model.OpenOpportunities open</small></article>
+    <article class="metric-card"><span>Open pipeline</span><strong>@Model.PipelineValue.ToString("N2")</strong><small>Weighted amount</small></article>
+</section>
+<section class="chart-grid mt-3" aria-label="CRM charts">
+    <div class="data-panel chart-panel"><div class="panel-heading"><h2>Lead status</h2></div><div class="chart-frame"><canvas id="leadStatusChart" aria-label="Lead status distribution"></canvas></div></div>
+    <div class="data-panel chart-panel"><div class="panel-heading"><h2>Opportunity pipeline</h2></div><div class="chart-frame"><canvas id="pipelineChart" aria-label="Opportunity value by stage"></canvas></div></div>
+    <div class="data-panel chart-panel chart-wide"><div class="panel-heading"><h2>Monthly sales</h2><span class="text-secondary">Closed won amount</span></div><div class="chart-frame chart-frame-wide"><canvas id="monthlySalesChart" aria-label="Monthly won sales"></canvas></div></div>
+</section>
+<section class="dashboard-lower">
+    <div class="data-panel">
+        <div class="panel-heading"><h2>Opportunity outcomes</h2><span class="text-secondary">Current scope</span></div>
+        <div class="outcome-row"><span>Won</span><strong>@Model.WonOpportunities</strong></div>
+        <div class="outcome-row"><span>Lost</span><strong>@Model.LostOpportunities</strong></div>
+        <div class="outcome-row"><span>Still open</span><strong>@Model.OpenOpportunities</strong></div>
+    </div>
+    <div class="data-panel">
+        <div class="panel-heading"><h2>Follow-ups</h2><span class="text-secondary">Assigned to your scope</span></div>
+        <div class="outcome-row"><span>Upcoming</span><strong>@Model.UpcomingFollowUps</strong></div>
+        <div class="outcome-row"><span>Overdue</span><strong class="@(Model.OverdueFollowUps > 0 ? "text-danger" : "")">@Model.OverdueFollowUps</strong></div>
+        <a asp-controller="FollowUps" asp-action="Index" class="panel-link">View follow-ups <span aria-hidden="true">→</span></a>
+    </div>
+</section>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        async function loadDashboardCharts() {
+            const chartRange = new URLSearchParams({ from: '@ViewBag.ChartFrom', to: '@ViewBag.ChartTo' });
+            const [leadResponse, pipelineResponse, salesResponse] = await Promise.all([
+                fetch(`/api/reports/lead-status?${chartRange}`),
+                fetch(`/api/reports/pipeline?${chartRange}`),
+                fetch(`/api/reports/monthly-sales?months=6&${chartRange}`)
+            ]);
+            if (![leadResponse, pipelineResponse, salesResponse].every(response => response.ok)) return;
+            const [leadResult, pipelineResult, salesResult] = await Promise.all([
+                leadResponse.json(), pipelineResponse.json(), salesResponse.json()
+            ]);
+            const palette = ['#176b78', '#67a9a4', '#d2a84b', '#7087a0', '#c56a56', '#8b9b78'];
+            new Chart(document.getElementById('leadStatusChart'), {
+                type: 'doughnut',
+                data: { labels: leadResult.data.map(item => item.status), datasets: [{ data: leadResult.data.map(item => item.count), backgroundColor: palette, borderWidth: 0 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+            new Chart(document.getElementById('pipelineChart'), {
+                type: 'bar',
+                data: { labels: pipelineResult.data.map(item => item.stage), datasets: [{ label: 'Weighted value', data: pipelineResult.data.map(item => item.weightedPipeline), backgroundColor: '#176b78', borderRadius: 3 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+            new Chart(document.getElementById('monthlySalesChart'), {
+                type: 'line',
+                data: { labels: salesResult.data.map(item => item.month), datasets: [{ label: 'Won amount', data: salesResult.data.map(item => item.wonAmount), borderColor: '#176b78', backgroundColor: '#e8f3f4', fill: true, tension: .25 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+        }
+        loadDashboardCharts().catch(() => {});
+    </script>
+}

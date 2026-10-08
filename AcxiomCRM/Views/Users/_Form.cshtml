@@ -1,0 +1,8 @@
+@model AcxiomCRM.ViewModels.Users.UserFormViewModel
+<div class="row g-3">
+    <div class="col-md-6"><label asp-for="Name" class="form-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" autocomplete="email" /><span asp-validation-for="Email" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="Role" class="form-label"></label><select asp-for="Role" class="form-select"><option>Admin</option><option>Manager</option><option>SalesExecutive</option></select><span asp-validation-for="Role" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="ManagerId" class="form-label">Manager</label><select asp-for="ManagerId" class="form-select"><option value="">No manager</option>@foreach (var manager in (IEnumerable<AcxiomCRM.Models.ApplicationUser>)ViewBag.Managers) { <option value="@manager.Id">@manager.Name (@manager.Email)</option> }</select><span asp-validation-for="ManagerId" class="text-danger"></span></div>
+    <div class="col-md-6 d-flex align-items-end"><div class="form-check mb-2"><input asp-for="IsActive" class="form-check-input" /><label asp-for="IsActive" class="form-check-label">Account active</label></div></div>
+</div>

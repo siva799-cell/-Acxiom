@@ -1,0 +1,13 @@
+@model AcxiomCRM.Services.PagedResult<AcxiomCRM.Models.FollowUp>
+@{
+    ViewData["Title"] = "Follow-ups";
+}
+<div class="page-heading"><div><p class="eyebrow">CUSTOMER CARE</p><h1>Follow-ups</h1><p class="text-secondary mb-0">Planned, completed, and overdue commitments.</p></div><a class="btn btn-primary" asp-action="Create">Schedule follow-up</a></div>
+@if (TempData["Success"] is string success) { <div class="alert alert-success">@success</div> }
+@if (TempData["Error"] is string error) { <div class="alert alert-danger">@error</div> }
+<form method="get" class="row g-2 mb-3"><div class="col-md-4"><select name="status" class="form-select"><option value="">All statuses</option>@foreach (var item in new[] { "Planned", "Completed", "Missed", "Cancelled" }) { <option selected="@(ViewBag.Status == item)">@item</option> }</select></div><div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div></form>
+<div class="table-responsive data-panel p-0"><table class="table table-hover align-middle mb-0"><thead><tr><th>Due</th><th>Subject</th><th>Type</th><th>Related record</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+@if (Model.Items.Count == 0) { <tr><td colspan="6" class="text-center text-secondary py-5">No follow-ups found.</td></tr> }
+@foreach (var item in Model.Items) { var overdue = item.Status == "Planned" && item.FollowUpDate < DateTime.UtcNow; <tr><td>@item.FollowUpDate.ToLocalTime().ToString("g")</td><td>@item.Subject</td><td>@item.FollowUpType</td><td>@(item.CustomerId is not null ? $"Customer #{item.CustomerId}" : item.LeadId is not null ? $"Lead #{item.LeadId}" : $"Opportunity #{item.OpportunityId}")</td><td><span class="badge text-bg-@(overdue ? "danger" : "light")">@(overdue ? "Overdue" : item.Status)</span></td><td>@if (item.Status == "Planned") { <div class="d-flex flex-wrap gap-2"><form asp-action="Complete" asp-route-id="@item.Id" method="post"><button class="btn btn-sm btn-outline-success">Complete</button></form><form asp-action="Cancel" asp-route-id="@item.Id" method="post"><button class="btn btn-sm btn-outline-secondary">Cancel</button></form><form asp-action="Reschedule" asp-route-id="@item.Id" method="post" class="d-flex gap-1"><input name="followUpDate" type="date" class="form-control form-control-sm" aria-label="New follow-up date" required /><button class="btn btn-sm btn-outline-primary">Reschedule</button></form></div> }</td></tr> }
+</tbody></table></div>
+@if (Model.PageCount > 1) { <nav class="mt-3"><ul class="pagination pagination-sm">@for (var index = 1; index <= Model.PageCount; index++) { <li class="page-item @(Model.Page == index ? "active" : "")"><a class="page-link" asp-route-page="@index" asp-route-status="@ViewBag.Status">@index</a></li> }</ul></nav> }

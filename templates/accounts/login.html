@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Sign in | AcxiomCRM{% endblock %}
+{% block content %}
+<section class="login-layout" aria-labelledby="login-title">
+  <div class="login-panel">
+    <div class="eyebrow">ACXIOMCRM WORKSPACE</div>
+    <h1 id="login-title">Sign in</h1>
+    <p class="text-secondary mb-4">Use your assigned account to continue.</p>
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">The username or password was not accepted.</div>
+    {% endif %}
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <div class="mb-3">
+        <label class="form-label" for="id_username">Username</label>
+        <input class="form-control" id="id_username" name="username" autocomplete="username" required autofocus>
+      </div>
+      <div class="mb-4">
+        <label class="form-label" for="id_password">Password</label>
+        <input class="form-control" id="id_password" type="password" name="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-primary w-100" type="submit">Sign in</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

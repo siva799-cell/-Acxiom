@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Something went wrong | AcxiomCRM{% endblock %}
+{% block content %}<section class="error-state"><span class="error-code">500</span><h1>Something went wrong</h1><p>We could not complete that request. Please try again later.</p><a class="btn btn-primary" href="{% url 'home' %}">Return to AcxiomCRM</a></section>{% endblock %}

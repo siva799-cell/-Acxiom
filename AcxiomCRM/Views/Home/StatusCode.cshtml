@@ -1,0 +1,11 @@
+@{
+    var statusCode = (int)(ViewData["StatusCode"] ?? 404);
+    var title = statusCode == 403 ? "Access denied" : "Page not found";
+    ViewData["Title"] = title;
+}
+<section class="empty-state">
+    <p class="eyebrow">@statusCode</p>
+    <h1>@title</h1>
+    <p>@(statusCode == 403 ? "You do not have permission to access this resource." : "The page you requested could not be found.")</p>
+    <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Back to dashboard</a>
+</section>

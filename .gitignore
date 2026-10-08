@@ -1,0 +1,33 @@
+# .NET build output
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+
+# Local database artifacts
+*.db
+*.db-shm
+*.db-wal
+*.mdf
+*.ldf
+
+# User secrets and local configuration
+secrets.json
+.env
+.env.*
+!.env.example
+
+# Logs and test output
+*.log
+TestResults/
+coverage/
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+.pytest_cache/
+.venv/
+venv/
+staticfiles/

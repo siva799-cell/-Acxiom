@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}New customer{% else %}Edit customer{% endif %} | AcxiomCRM{% endblock %}
+{% block content %}
+<div class="page-heading"><div><div class="eyebrow">CUSTOMERS</div><h1>{% if is_create %}Create customer{% else %}Edit {{ customer.customer_code }}{% endif %}</h1><p class="text-secondary mb-0">Customer codes are generated automatically.</p></div></div>
+<form method="post" class="surface-panel crm-form">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="row g-3">
+    {% for field in form %}<div class="col-12 {% if field.name == 'address' %}col-lg-8{% elif field.name == 'customer_name' or field.name == 'company_name' %}col-md-6{% else %}col-md-6 col-lg-4{% endif %}"><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}</div>{% endfor %}
+  </div>
+  <div class="form-actions"><a class="btn btn-outline-secondary" href="{% if customer %}{% url 'customers:detail' customer.pk %}{% else %}{% url 'customers:list' %}{% endif %}">Cancel</a><button class="btn btn-primary" type="submit">Save customer</button></div>
+</form>
+{% endblock %}
